@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AuthLab.Api/AuthLab.Api.csproj" />
+  <Project Path="AuthLab.Application/AuthLab.Application.csproj" />
+  <Project Path="AuthLab.Domain/AuthLab.Domain.csproj" />
+  <Project Path="AuthLab.Infrastructure/AuthLab.Infrastructure.csproj" />
+</Solution>

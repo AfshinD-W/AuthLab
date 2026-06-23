@@ -1,10 +1,11 @@
 ﻿using AuthLab.Application.DTO;
+using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace AuthLab.Infrastructure.Identity.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly UserManager<User> _userManager;
 

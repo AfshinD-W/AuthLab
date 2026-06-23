@@ -1,5 +1,5 @@
 ﻿using AuthLab.Application.DTO;
-using AuthLab.Infrastructure.Identity.Services;
+using AuthLab.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthLab.Api.Controllers
@@ -8,8 +8,8 @@ namespace AuthLab.Api.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
-        public UserController(UserService userService)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }

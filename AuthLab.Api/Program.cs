@@ -13,6 +13,8 @@ builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<AppDbContext
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddControllers();
+
 //Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -37,6 +39,8 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;
     });
 }
+
+app.MapControllers();
 
 app.UseHttpsRedirection();
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthLab.Infrastructure.Database
 {
-    public class AppDbContext : IdentityDbContext<User>
+    public class AppDbContext : IdentityDbContext<User, Role, string>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {

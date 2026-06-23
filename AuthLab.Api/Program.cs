@@ -1,13 +1,12 @@
 using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //DataBase
 builder.Services.AddDbContext<AppDbContext>(c => c.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<AppDbContext>();
 
 //Swagger
 builder.Services.AddEndpointsApiExplorer();

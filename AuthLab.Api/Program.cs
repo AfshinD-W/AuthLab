@@ -2,13 +2,25 @@ using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
 using AuthLab.Infrastructure.Identity.Services;
+using AuthLab.Infrastructure.Identity.Validators;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //DataBase
 builder.Services.AddDbContext<AppDbContext>(c => c.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<User, Role>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<User, Role>(c =>
+    {
+        c.User.RequireUniqueEmail = true;
+
+        c.Password.RequiredLength = 8;
+        c.Password.RequireNonAlphanumeric = true;
+        c.Password.RequireUppercase = true;
+        c.Password.RequireLowercase = true;
+        c.Password.RequireDigit = true;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddPasswordValidator<PasswordValidator<User>>();
 
 //Services
 builder.Services.AddScoped<IUserService, UserService>();

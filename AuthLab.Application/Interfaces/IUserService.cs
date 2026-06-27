@@ -1,4 +1,4 @@
-﻿using AuthLab.Application.DTO;
+﻿using AuthLab.Application.DTO.User;
 
 namespace AuthLab.Application.Interfaces
 {

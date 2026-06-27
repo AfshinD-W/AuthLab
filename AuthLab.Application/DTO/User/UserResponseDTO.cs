@@ -1,4 +1,4 @@
-﻿namespace AuthLab.Application.DTO
+﻿namespace AuthLab.Application.DTO.User
 {
     public class UserResponseDTO
     {

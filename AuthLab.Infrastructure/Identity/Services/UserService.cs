@@ -1,4 +1,4 @@
-﻿using AuthLab.Application.DTO;
+﻿using AuthLab.Application.DTO.User;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;

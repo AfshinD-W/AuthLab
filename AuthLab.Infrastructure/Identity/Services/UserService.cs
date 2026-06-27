@@ -1,4 +1,5 @@
 ﻿using AuthLab.Application.DTO.User;
+using AuthLab.Application.Exceptions;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -27,8 +28,7 @@ namespace AuthLab.Infrastructure.Identity.Services
 
             if (!result.Succeeded)
             {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception(errors);
+                throw new ValidationException(result.Errors.Select(x => x.Description));
             }
 
             return new UserResponseDTO()

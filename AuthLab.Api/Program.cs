@@ -1,3 +1,4 @@
+using AuthLab.Api.Middlewares;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
@@ -56,5 +57,7 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();

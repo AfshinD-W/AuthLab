@@ -16,7 +16,7 @@ namespace AuthLab.Api.Controllers
         }
 
         [HttpPost("create-user")]
-        public async Task<IActionResult> CreateUserAsync(UserRequestDTO requestDTO)
+        public async Task<IActionResult> CreateUserAsync(CreateUserRequestDTO requestDTO)
         {
             var result = await _userService.CreateUserAsync(requestDTO);
 
@@ -24,6 +24,21 @@ namespace AuthLab.Api.Controllers
             {
                 Success = true,
                 Message = "User created successfully",
+                Data = result
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPut("update-User")]
+        public async Task<IActionResult> UpdateUserAsync(UpdateUserRequestDTO requestDTO)
+        {
+            var result = await _userService.UpdateUserAsync(requestDTO);
+
+            ApiResponse<UserResponseDTO> response = new()
+            {
+                Success = true,
+                Message = "User updated successfully",
                 Data = result
             };
 

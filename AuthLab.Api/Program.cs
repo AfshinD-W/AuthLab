@@ -25,6 +25,7 @@ builder.Services.AddIdentity<User, Role>(c =>
 
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddControllers();

@@ -10,9 +10,11 @@ namespace AuthLab.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IUserRoleService _userRoleService;
+        public UserController(IUserService userService, IUserRoleService userRoleService)
         {
             _userService = userService;
+            _userRoleService = userRoleService;
         }
 
         [HttpPost("create-user")]
@@ -54,6 +56,21 @@ namespace AuthLab.Api.Controllers
             {
                 Success = true,
                 Message = "User deleted successfully."
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost("sync-roles")]
+        public async Task<IActionResult> SyncUserRolesAsync(UpdateUserRolesRequestDto dto)
+        {
+            var result = await _userRoleService.SyncUserRolesAsync(dto);
+
+            ApiResponse<UpdateUserRolesRequestDto> response = new()
+            {
+                Success = true,
+                Message = "Roles synced successfully.",
+                Data = result,
             };
 
             return Ok(response);

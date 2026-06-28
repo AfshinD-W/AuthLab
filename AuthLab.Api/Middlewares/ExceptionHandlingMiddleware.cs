@@ -31,9 +31,7 @@ namespace AuthLab.Api.Middlewares
             }
         }
 
-        private static async Task HandleExceptionAsync(
-            HttpContext context,
-            Exception exception)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
 
@@ -41,9 +39,9 @@ namespace AuthLab.Api.Middlewares
             {
                 ValidationException => (int)HttpStatusCode.BadRequest,
 
-                //NotFoundException => (int)HttpStatusCode.NotFound,
+                NotFoundException => (int)HttpStatusCode.NotFound,
 
-                //UnauthorizedException => (int)HttpStatusCode.Unauthorized,
+                UnauthorizedException => (int)HttpStatusCode.Unauthorized,
 
                 _ => (int)HttpStatusCode.InternalServerError
             };
@@ -53,6 +51,18 @@ namespace AuthLab.Api.Middlewares
             ErrorResponse response = exception switch
             {
                 ValidationException ex => new ErrorResponse
+                {
+                    Message = ex.Message,
+                    Errors = ex.Errors
+                },
+
+                NotFoundException ex => new ErrorResponse
+                {
+                    Message = ex.Message,
+                    Errors = ex.Errors
+                },
+
+                UnauthorizedException ex => new ErrorResponse
                 {
                     Message = ex.Message,
                     Errors = ex.Errors

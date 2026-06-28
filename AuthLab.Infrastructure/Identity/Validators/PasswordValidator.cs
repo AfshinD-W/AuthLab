@@ -4,29 +4,46 @@ namespace AuthLab.Infrastructure.Identity.Validators
 {
     public class PasswordValidator<TUser> : IPasswordValidator<TUser> where TUser : IdentityUser
     {
-        private readonly ICollection<string> _blackList = ["1qaz!QAZ", "password"];
+        private readonly HashSet<string> BlackList = ["1qaz!QAZ", "password"];
 
         public Task<IdentityResult> ValidateAsync(UserManager<TUser> manager, TUser user, string? password)
         {
-            if (!string.IsNullOrEmpty(password) && _blackList.Any(c => string.Equals(c, password, StringComparison.OrdinalIgnoreCase)))
+
+            List<IdentityError> errors = [];
+
+            if (string.IsNullOrWhiteSpace(password))
             {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError
-                {
-                    Code = "PassInBlackList",
-                    Description = "this password is in black list you can't use it."
-                }));
+                return Task.FromResult(
+                    IdentityResult.Failed(new IdentityError
+                    {
+                        Code = "Password.Required",
+                        Description = "Password is required."
+                    }));
             }
 
-            if (!string.IsNullOrEmpty(password) && password.Contains(user.UserName!, StringComparison.OrdinalIgnoreCase))
+            if (BlackList.Contains(password))
             {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError
+                errors.Add(new IdentityError
                 {
-                    Code = "UserNameInPass",
-                    Description = "You can't use your username in your password."
-                }));
+                    Code = "Password.Blacklisted",
+                    Description = "This password is blacklisted and cannot be used."
+                });
             }
 
-            return Task.FromResult(IdentityResult.Success);
+            if (!string.IsNullOrWhiteSpace(user.UserName) &&
+                password.Contains(user.UserName, StringComparison.OrdinalIgnoreCase))
+            {
+                errors.Add(new IdentityError
+                {
+                    Code = "Password.ContainsUserName",
+                    Description = "Your password cannot contain your username."
+                });
+            }
+
+            return Task.FromResult(
+                errors.Count == 0
+                    ? IdentityResult.Success
+                    : IdentityResult.Failed([.. errors]));
         }
     }
 }

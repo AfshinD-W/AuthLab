@@ -4,7 +4,7 @@ namespace AuthLab.Application.Interfaces
 {
     public interface IRoleService
     {
-        Task<List<string>> GetStringsAsync();
+        Task<List<RoleResponseDto>> GetRolesAsync();
         Task<RoleResponseDto> CreateRoleAsync(RoleRequestDto requestDTO);
         Task DeleteRoleAsync(string id);
     }

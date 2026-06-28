@@ -15,12 +15,26 @@ namespace AuthLab.Api.Controllers
             _roleService = roleService;
         }
 
-        [HttpPost("create-role")]
-        public async Task<IActionResult> CreateRoleAsync(RoleRequestDTO requestDTO)
+        [HttpGet("get-all-roles")]
+        public async Task<IActionResult> GetRolesAsync()
         {
-            var result = await _roleService.CreateRoleAsync(requestDTO);
+            var result = await _roleService.GetRolesAsync();
 
-            ApiResponse<RoleResponseDTO> response = new()
+            ApiResponse<List<RoleResponseDto>> response = new()
+            {
+                Success = true,
+                Data = result
+            };
+
+            return Ok(result);
+        }
+
+        [HttpPost("create-role")]
+        public async Task<IActionResult> CreateRoleAsync(RoleRequestDto requestDto)
+        {
+            var result = await _roleService.CreateRoleAsync(requestDto);
+
+            ApiResponse<RoleResponseDto> response = new()
             {
                 Success = true,
                 Message = "Role created successfully",
@@ -35,7 +49,7 @@ namespace AuthLab.Api.Controllers
         {
             await _roleService.DeleteRoleAsync(id);
 
-            ApiResponse<RoleResponseDTO> response = new()
+            ApiResponse<RoleResponseDto> response = new()
             {
                 Success = true,
                 Message = "Role deleted successfully",

@@ -50,28 +50,20 @@ namespace AuthLab.Api.Middlewares
 
             context.Response.StatusCode = statusCode;
 
-            ApiResponse<object> response = exception switch
+            ApiResponse<object> response = new()
             {
-                ValidationException ex => new()
-                {
-                    Success = false,
-                    Message = ex.Message,
-                    Errors = ex.Errors
-                },
-
-                BusinessException ex => new()
-                {
-                    Success = false,
-                    Message = ex.Message,
-                    Errors = ex.Errors
-                },
-
-                _ => new()
-                {
-                    Success = false,
-                    Message = "An unexpected error occurred.",
-                }
+                Success = false,
+                Message = statusCode == (int)HttpStatusCode.InternalServerError ? "An unexpected error occurred." : exception.Message
             };
+
+            if (exception is ValidationException validation)
+            {
+                response.Errors = validation.Errors;
+            }
+            else if (exception is BusinessException business)
+            {
+                response.Errors = business.Errors;
+            }
 
             await context.Response.WriteAsJsonAsync(response);
         }

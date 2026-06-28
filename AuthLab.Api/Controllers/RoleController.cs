@@ -1,4 +1,5 @@
-﻿using AuthLab.Application.DTO.Role;
+﻿using AuthLab.Api.Response;
+using AuthLab.Application.DTO.Role;
 using AuthLab.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,14 @@ namespace AuthLab.Api.Controllers
         {
             var result = await _roleService.CreateRoleAsync(requestDTO);
 
-            if (result == null)
-                return NotFound();
+            ApiResponse<RoleResponseDTO> response = new()
+            {
+                Success = true,
+                Message = "Role created successfully",
+                Data = result
+            };
 
-            return Ok(result);
+            return Ok(response);
         }
     }
 }

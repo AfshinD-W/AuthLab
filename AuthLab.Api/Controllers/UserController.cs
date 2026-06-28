@@ -1,4 +1,5 @@
-﻿using AuthLab.Application.DTO.User;
+﻿using AuthLab.Api.Response;
+using AuthLab.Application.DTO.User;
 using AuthLab.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,10 +20,14 @@ namespace AuthLab.Api.Controllers
         {
             var result = await _userService.CreateUserAsync(requestDTO);
 
-            if (result == null)
-                return NotFound();
+            ApiResponse<UserResponseDTO> response = new()
+            {
+                Success = true,
+                Message = "User created successfully",
+                Data = result
+            };
 
-            return Ok(result);
+            return Ok(response);
         }
     }
 }

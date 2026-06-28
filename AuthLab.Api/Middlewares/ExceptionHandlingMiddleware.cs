@@ -48,29 +48,19 @@ namespace AuthLab.Api.Middlewares
 
             context.Response.StatusCode = statusCode;
 
-            ErrorResponse response = exception switch
+            ApiResponse<object> response = exception switch
             {
-                ValidationException ex => new ErrorResponse
+                ValidationException ex => new()
                 {
+                    Success = false,
                     Message = ex.Message,
                     Errors = ex.Errors
                 },
 
-                NotFoundException ex => new ErrorResponse
+                _ => new()
                 {
-                    Message = ex.Message,
-                    Errors = ex.Errors
-                },
-
-                UnauthorizedException ex => new ErrorResponse
-                {
-                    Message = ex.Message,
-                    Errors = ex.Errors
-                },
-
-                _ => new ErrorResponse
-                {
-                    Message = "An unexpected error occurred."
+                    Success = false,
+                    Message = exception.Message,
                 }
             };
 

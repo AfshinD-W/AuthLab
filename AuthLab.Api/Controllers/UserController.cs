@@ -44,5 +44,19 @@ namespace AuthLab.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete("delete-user")]
+        public async Task<IActionResult> DeleteUserAsync(string id)
+        {
+            await _userService.DeleteUserAsync(id);
+
+            ApiResponse<UserResponseDTO> response = new()
+            {
+                Success = true,
+                Message = "User deleted successfully."
+            };
+
+            return Ok(response);
+        }
     }
 }

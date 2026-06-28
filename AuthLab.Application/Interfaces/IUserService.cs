@@ -6,5 +6,6 @@ namespace AuthLab.Application.Interfaces
     {
         Task<UserResponseDTO> CreateUserAsync(CreateUserRequestDTO requestDTO);
         Task<UserResponseDTO> UpdateUserAsync(UpdateUserRequestDTO requestDTO);
+        Task DeleteUserAsync(string id);
     }
 }

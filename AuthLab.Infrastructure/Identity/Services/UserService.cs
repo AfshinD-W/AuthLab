@@ -8,6 +8,8 @@ namespace AuthLab.Infrastructure.Identity.Services
 {
     public class UserService : IUserService
     {
+        private const string UserNotFound = "User not found.";
+
         private readonly UserManager<User> _userManager;
 
         public UserService(UserManager<User> userManager)
@@ -41,7 +43,7 @@ namespace AuthLab.Infrastructure.Identity.Services
 
         public async Task<UserResponseDTO> UpdateUserAsync(UpdateUserRequestDTO requestDTO)
         {
-            User? user = await _userManager.FindByIdAsync(requestDTO.Id) ?? throw new NotFoundException("User not found.");
+            User? user = await _userManager.FindByIdAsync(requestDTO.Id) ?? throw new NotFoundException(UserNotFound);
 
             user.UserName = requestDTO.UserName;
             user.Email = requestDTO.Email;
@@ -59,6 +61,16 @@ namespace AuthLab.Infrastructure.Identity.Services
                 Email = requestDTO.Email,
                 PhoneNumber = requestDTO.PhoneNumber,
             };
+        }
+
+        public async Task DeleteUserAsync(string id)
+        {
+            User user = await _userManager.FindByIdAsync(id) ?? throw new NotFoundException(UserNotFound);
+
+            IdentityResult result = await _userManager.DeleteAsync(user);
+
+            if (!result.Succeeded)
+                throw new BusinessException(result.Errors.Select(e => e.Description));
         }
     }
 }

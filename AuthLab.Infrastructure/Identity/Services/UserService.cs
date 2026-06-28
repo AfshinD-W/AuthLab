@@ -3,6 +3,7 @@ using AuthLab.Application.Exceptions;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthLab.Infrastructure.Identity.Services
 {
@@ -17,23 +18,38 @@ namespace AuthLab.Infrastructure.Identity.Services
             _userManager = userManager;
         }
 
-        public async Task<UserResponseDTO> CreateUserAsync(CreateUserRequestDTO requestDTO)
+        public async Task<List<UserResponseDto>> GetUsersAsync()
+        {
+            var existsUsers = await _userManager.Users.ToListAsync() ?? throw new NotFoundException("There is no user in database.");
+
+            List<UserResponseDto> response = [.. existsUsers.Select(u => new UserResponseDto
+            {
+                Id = u.Id,
+                UserName = u.UserName ?? string.Empty,
+                Email = u.Email ?? string.Empty,
+                PhoneNumber = u.PhoneNumber,
+            })];
+
+            return response;
+        }
+
+        public async Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto requestDto)
         {
             User user = new()
             {
-                UserName = requestDTO.UserName,
-                Email = requestDTO.Email,
-                PhoneNumber = requestDTO.PhoneNumber,
+                UserName = requestDto.UserName,
+                Email = requestDto.Email,
+                PhoneNumber = requestDto.PhoneNumber,
             };
 
-            IdentityResult result = await _userManager.CreateAsync(user, requestDTO.Password);
+            IdentityResult result = await _userManager.CreateAsync(user, requestDto.Password);
 
             if (!result.Succeeded)
             {
                 throw new ValidationException(result.Errors.Select(x => x.Description));
             }
 
-            return new UserResponseDTO()
+            return new UserResponseDto()
             {
                 UserName = user.UserName,
                 Email = user.Email,
@@ -41,25 +57,25 @@ namespace AuthLab.Infrastructure.Identity.Services
             };
         }
 
-        public async Task<UserResponseDTO> UpdateUserAsync(UpdateUserRequestDTO requestDTO)
+        public async Task<UserResponseDto> UpdateUserAsync(UpdateUserRequestDto requestDto)
         {
-            User? user = await _userManager.FindByIdAsync(requestDTO.Id) ?? throw new NotFoundException(UserNotFound);
+            User? user = await _userManager.FindByIdAsync(requestDto.Id) ?? throw new NotFoundException(UserNotFound);
 
-            user.UserName = requestDTO.UserName;
-            user.Email = requestDTO.Email;
-            user.PhoneNumber = requestDTO.PhoneNumber;
+            user.UserName = requestDto.UserName;
+            user.Email = requestDto.Email;
+            user.PhoneNumber = requestDto.PhoneNumber;
 
             IdentityResult result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
                 throw new ValidationException(result.Errors.Select(e => e.Description));
 
-            return new UserResponseDTO()
+            return new UserResponseDto()
             {
                 Id = user.Id,
-                UserName = requestDTO.UserName,
-                Email = requestDTO.Email,
-                PhoneNumber = requestDTO.PhoneNumber,
+                UserName = requestDto.UserName,
+                Email = requestDto.Email,
+                PhoneNumber = requestDto.PhoneNumber,
             };
         }
 

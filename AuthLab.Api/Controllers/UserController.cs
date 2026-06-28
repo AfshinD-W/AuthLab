@@ -17,12 +17,26 @@ namespace AuthLab.Api.Controllers
             _userRoleService = userRoleService;
         }
 
-        [HttpPost("create-user")]
-        public async Task<IActionResult> CreateUserAsync(CreateUserRequestDTO requestDTO)
+        [HttpGet("get-all-users")]
+        public async Task<IActionResult> GetUsersAsync()
         {
-            var result = await _userService.CreateUserAsync(requestDTO);
+            var result = await _userService.GetUsersAsync();
 
-            ApiResponse<UserResponseDTO> response = new()
+            ApiResponse<List<UserResponseDto>> response = new()
+            {
+                Success = true,
+                Data = result
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost("create-user")]
+        public async Task<IActionResult> CreateUserAsync(CreateUserRequestDto dto)
+        {
+            var result = await _userService.CreateUserAsync(dto);
+
+            ApiResponse<UserResponseDto> response = new()
             {
                 Success = true,
                 Message = "User created successfully",
@@ -33,11 +47,11 @@ namespace AuthLab.Api.Controllers
         }
 
         [HttpPut("update-User")]
-        public async Task<IActionResult> UpdateUserAsync(UpdateUserRequestDTO requestDTO)
+        public async Task<IActionResult> UpdateUserAsync(UpdateUserRequestDto dto)
         {
-            var result = await _userService.UpdateUserAsync(requestDTO);
+            var result = await _userService.UpdateUserAsync(dto);
 
-            ApiResponse<UserResponseDTO> response = new()
+            ApiResponse<UserResponseDto> response = new()
             {
                 Success = true,
                 Message = "User updated successfully",
@@ -52,7 +66,7 @@ namespace AuthLab.Api.Controllers
         {
             await _userService.DeleteUserAsync(id);
 
-            ApiResponse<UserResponseDTO> response = new()
+            ApiResponse<UserResponseDto> response = new()
             {
                 Success = true,
                 Message = "User deleted successfully."

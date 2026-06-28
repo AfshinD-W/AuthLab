@@ -1,6 +1,6 @@
 ﻿namespace AuthLab.Application.DTO.User
 {
-    public class UpdateUserRequestDTO
+    public class UpdateUserRequestDto
     {
         public required string Id { get; set; }
         public required string UserName { get; set; }

@@ -15,11 +15,11 @@ namespace AuthLab.Infrastructure.Identity.Services
             _roleManager = roleManager;
         }
 
-        public async Task<RoleResponseDTO> CreateRoleAsync(RoleRequestDTO requestDTO)
+        public async Task<RoleResponseDto> CreateRoleAsync(RoleRequestDto requestDto)
         {
             Role role = new()
             {
-                Name = requestDTO.Name,
+                Name = requestDto.Name,
             };
 
             IdentityResult result = await _roleManager.CreateAsync(role);
@@ -29,7 +29,7 @@ namespace AuthLab.Infrastructure.Identity.Services
                 throw new ValidationException(result.Errors.Select(e => e.Description));
             }
 
-            return new RoleResponseDTO { Name = role.Name };
+            return new RoleResponseDto { Name = role.Name };
         }
 
         public async Task DeleteRoleAsync(string id)

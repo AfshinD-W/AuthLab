@@ -1,6 +1,6 @@
 ﻿namespace AuthLab.Application.DTO.Role
 {
-    public class RoleRequestDTO
+    public class RoleRequestDto
     {
         public required string Name { get; set; }
     }

@@ -4,8 +4,9 @@ namespace AuthLab.Application.Interfaces
 {
     public interface IUserService
     {
-        Task<UserResponseDTO> CreateUserAsync(CreateUserRequestDTO requestDTO);
-        Task<UserResponseDTO> UpdateUserAsync(UpdateUserRequestDTO requestDTO);
+        Task<List<UserResponseDto>> GetUsersAsync();
+        Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto requestDto);
+        Task<UserResponseDto> UpdateUserAsync(UpdateUserRequestDto requestDto);
         Task DeleteUserAsync(string id);
     }
 }

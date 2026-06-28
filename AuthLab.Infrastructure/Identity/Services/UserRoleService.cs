@@ -14,13 +14,13 @@ namespace AuthLab.Infrastructure.Identity.Services
             _userManager = userManager;
         }
 
-        public async Task<UpdateUserRolesRequestDto> SyncUserRolesAsync(UpdateUserRolesRequestDto requestDTO)
+        public async Task<UpdateUserRolesRequestDto> SyncUserRolesAsync(UpdateUserRolesRequestDto requestDto)
         {
-            User user = await _userManager.FindByIdAsync(requestDTO.UserId) ?? throw new NotFoundException("User not found.");
+            User user = await _userManager.FindByIdAsync(requestDto.UserId) ?? throw new NotFoundException("User not found.");
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            var newRoles = requestDTO.RoleNames?.Except(userRoles).ToList() ?? [];
-            var deletedRoles = userRoles.Except(requestDTO.RoleNames ?? []).ToList();
+            var newRoles = requestDto.RoleNames?.Except(userRoles).ToList() ?? [];
+            var deletedRoles = userRoles.Except(requestDto.RoleNames ?? []).ToList();
 
             if (newRoles.Count > 0)
             {
@@ -38,7 +38,7 @@ namespace AuthLab.Infrastructure.Identity.Services
                     throw new BusinessException(removedRoles.Errors.Select(e => e.Description));
             }
 
-            return new() { UserId = user.Id, RoleNames = requestDTO.RoleNames };
+            return new() { UserId = user.Id, RoleNames = requestDto.RoleNames };
         }
     }
 }

@@ -31,5 +31,15 @@ namespace AuthLab.Infrastructure.Identity.Services
 
             return new RoleResponseDTO { Name = role.Name };
         }
+
+        public async Task DeleteRoleAsync(string id)
+        {
+            Role? role = await _roleManager.FindByIdAsync(id) ?? throw new NotFoundException("Role not found");
+
+            IdentityResult result = await _roleManager.DeleteAsync(role);
+
+            if (!result.Succeeded)
+                throw new BusinessException(result.Errors.Select(e => e.Description));
+        }
     }
 }

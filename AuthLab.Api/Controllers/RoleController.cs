@@ -29,5 +29,20 @@ namespace AuthLab.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete("delete-role")]
+        public async Task<IActionResult> DeleteRoleAsync(string id)
+        {
+            await _roleService.DeleteRoleAsync(id);
+
+            ApiResponse<RoleResponseDTO> response = new()
+            {
+                Success = true,
+                Message = "Role deleted successfully",
+            };
+
+            return Ok(response);
+        }
+
     }
 }

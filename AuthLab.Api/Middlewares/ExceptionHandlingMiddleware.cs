@@ -39,6 +39,8 @@ namespace AuthLab.Api.Middlewares
             {
                 ValidationException => (int)HttpStatusCode.BadRequest,
 
+                BusinessException => (int)HttpStatusCode.Conflict,
+
                 NotFoundException => (int)HttpStatusCode.NotFound,
 
                 UnauthorizedException => (int)HttpStatusCode.Unauthorized,
@@ -57,10 +59,17 @@ namespace AuthLab.Api.Middlewares
                     Errors = ex.Errors
                 },
 
+                BusinessException ex => new()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                    Errors = ex.Errors
+                },
+
                 _ => new()
                 {
                     Success = false,
-                    Message = exception.Message,
+                    Message = "An unexpected error occurred.",
                 }
             };
 

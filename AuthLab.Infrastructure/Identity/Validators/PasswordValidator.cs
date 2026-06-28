@@ -8,7 +8,6 @@ namespace AuthLab.Infrastructure.Identity.Validators
 
         public Task<IdentityResult> ValidateAsync(UserManager<TUser> manager, TUser user, string? password)
         {
-
             List<IdentityError> errors = [];
 
             if (string.IsNullOrWhiteSpace(password))

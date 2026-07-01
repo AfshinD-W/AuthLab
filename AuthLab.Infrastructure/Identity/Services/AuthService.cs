@@ -54,6 +54,9 @@ namespace AuthLab.Infrastructure.Identity.Services
                 UserId = user.Id,
             };
 
+            await _appDbContext.RefreshTokens.AddAsync(refreshToken);
+            await _appDbContext.SaveChangesAsync();
+
             return new LoginResponseDto()
             {
                 AccessToken = jwtResponse.Token,

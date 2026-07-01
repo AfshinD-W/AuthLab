@@ -6,5 +6,6 @@ namespace AuthLab.Application.Interfaces
     {
         Task<LoginResponseDto> LoginAsync(LoginRequestDto request);
         Task<LoginResponseDto> RefreshTokenAsync(string refreshToken);
+        Task LogOutAsync(string refreshToken);
     }
 }

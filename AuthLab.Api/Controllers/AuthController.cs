@@ -44,5 +44,19 @@ namespace AuthLab.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogOut(string refreshToken)
+        {
+            await _authService.LogOutAsync(refreshToken);
+
+            var response = new ApiResponse<object>()
+            {
+                Success = true,
+                Message = "You logout successfully",
+            };
+
+            return Ok();
+        }
     }
 }

@@ -1,0 +1,8 @@
+﻿namespace AuthLab.Application.DTO.Login
+{
+    public class LoginResponseDto
+    {
+        public required string AccessToken { get; init; }
+        public DateTime ExpiresAt { get; init; }
+    }
+}

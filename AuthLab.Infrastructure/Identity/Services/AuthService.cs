@@ -6,6 +6,7 @@ using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 
@@ -19,15 +20,17 @@ namespace AuthLab.Infrastructure.Identity.Services
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly RefreshTokenOptions _refreshTokenOptions;
+        private readonly ILogger _logger;
         private readonly AppDbContext _appDbContext;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
-            _appDbContext = appDbContext;
             _refreshTokenOptions = refreshTokenOptions.Value;
+            _logger = logger;
+            _appDbContext = appDbContext;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
@@ -68,7 +71,26 @@ namespace AuthLab.Infrastructure.Identity.Services
         {
             RefreshToken refresh = await _appDbContext.RefreshTokens.Include(r => r.User).SingleOrDefaultAsync(r => r.Token == refreshToken) ?? throw new UnauthorizedException(InvalidRefreshToken);
 
-            if (refresh.IsRevoked || refresh.IsExpired)
+            if (refresh.IsRevoked)
+            {
+                if (!string.IsNullOrWhiteSpace(refresh.ReplacedByToken))
+                {
+                    var activeTokens = await _appDbContext.RefreshTokens
+                        .Where(t => t.UserId == refresh.UserId && !t.IsRevoked)
+                        .ToListAsync();
+
+                    foreach (var token in activeTokens)
+                    {
+                        token.RevokedAt = DateTime.UtcNow;
+                    }
+
+                    _logger.LogWarning("Refresh token reuse detected for user {UserId}", refresh.UserId);
+                }
+
+                throw new UnauthorizedException(InvalidRefreshToken);
+            }
+
+            if (refresh.IsExpired)
                 throw new UnauthorizedException(InvalidRefreshToken);
 
             var userRoles = await _userManager.GetRolesAsync(refresh.User);

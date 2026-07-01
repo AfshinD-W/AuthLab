@@ -29,5 +29,20 @@ namespace AuthLab.Api.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshTokenAsync(string refreshToken)
+        {
+            var result = await _authService.RefreshTokenAsync(refreshToken);
+
+            ApiResponse<LoginResponseDto> response = new()
+            {
+                Success = true,
+                Message = "User login was successfully",
+                Data = result,
+            };
+
+            return Ok(response);
+        }
     }
 }

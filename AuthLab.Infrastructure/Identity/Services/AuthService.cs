@@ -20,7 +20,7 @@ namespace AuthLab.Infrastructure.Identity.Services
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly RefreshTokenOptions _refreshTokenOptions;
-        private readonly ILogger _logger;
+        private readonly ILogger<AuthService> _logger;
         private readonly AppDbContext _appDbContext;
 
         public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger logger)
@@ -75,16 +75,18 @@ namespace AuthLab.Infrastructure.Identity.Services
             {
                 if (!string.IsNullOrWhiteSpace(refresh.ReplacedByToken))
                 {
-                    var activeTokens = await _appDbContext.RefreshTokens
+                    var activeRefreshTokens = await _appDbContext.RefreshTokens
                         .Where(t => t.UserId == refresh.UserId && !t.IsRevoked)
                         .ToListAsync();
 
-                    foreach (var token in activeTokens)
+                    foreach (var token in activeRefreshTokens)
                     {
                         token.RevokedAt = DateTime.UtcNow;
                     }
 
                     _logger.LogWarning("Refresh token reuse detected for user {UserId}", refresh.UserId);
+
+                    await _appDbContext.SaveChangesAsync();
                 }
 
                 throw new UnauthorizedException(InvalidRefreshToken);

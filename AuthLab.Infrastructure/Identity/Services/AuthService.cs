@@ -13,6 +13,8 @@ namespace AuthLab.Infrastructure.Identity.Services
 {
     public class AuthService : IAuthService
     {
+        private const string InvalidRefreshToken = "Invalid refresh token.";
+
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtService _jwtService;
@@ -64,10 +66,10 @@ namespace AuthLab.Infrastructure.Identity.Services
 
         public async Task<LoginResponseDto> RefreshTokenAsync(string refreshToken)
         {
-            RefreshToken refresh = await _appDbContext.RefreshTokens.Include(r => r.User).SingleOrDefaultAsync(r => r.Token == refreshToken) ?? throw new NotFoundException("RefreshToken not found.");
+            RefreshToken refresh = await _appDbContext.RefreshTokens.Include(r => r.User).SingleOrDefaultAsync(r => r.Token == refreshToken) ?? throw new UnauthorizedException(InvalidRefreshToken);
 
             if (refresh.IsRevoked || refresh.IsExpired)
-                throw new NotFoundException("RefreshToken is expierd.");
+                throw new UnauthorizedException(InvalidRefreshToken);
 
             var userRoles = await _userManager.GetRolesAsync(refresh.User);
 

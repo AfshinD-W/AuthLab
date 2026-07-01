@@ -20,8 +20,8 @@ namespace AuthLab.Infrastructure.Identity.Services
         {
             List<Claim> claims =
                 [
-                    new(JwtRegisteredClaimNames.Sub, userInfo.UserId),
-                    new(JwtRegisteredClaimNames.Email, userInfo.Email),
+                    new(ClaimTypes.NameIdentifier, userInfo.UserId),
+                    new(ClaimTypes.Email, userInfo.Email),
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 ];
 

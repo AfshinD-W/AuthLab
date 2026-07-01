@@ -23,7 +23,7 @@ namespace AuthLab.Infrastructure.Identity.Services
         private readonly ILogger<AuthService> _logger;
         private readonly AppDbContext _appDbContext;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger logger)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger<AuthService> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;

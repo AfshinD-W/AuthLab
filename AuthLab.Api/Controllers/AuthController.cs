@@ -23,7 +23,7 @@ namespace AuthLab.Api.Controllers
             ApiResponse<LoginResponseDto> response = new()
             {
                 Success = true,
-                Message = "User created successfully",
+                Message = "User login was successfully",
                 Data = result,
             };
 

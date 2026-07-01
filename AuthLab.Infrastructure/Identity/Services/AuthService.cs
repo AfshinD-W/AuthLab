@@ -35,7 +35,7 @@ namespace AuthLab.Infrastructure.Identity.Services
             JwtUserInfoDto userInfo = new()
             {
                 UserId = user.Id,
-                Email = user.Email ?? throw new UnauthorizedException("User email is null"),
+                Email = request.Email,
                 Roles = roles
             };
 

@@ -1,4 +1,5 @@
 using AuthLab.Api.Middlewares;
+using AuthLab.Application.DTO.Jwt;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
@@ -22,6 +23,9 @@ builder.Services.AddIdentity<User, Role>(c =>
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddPasswordValidator<PasswordValidator<User>>();
+
+//Configs
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
 //Services
 builder.Services.AddScoped<IUserService, UserService>();

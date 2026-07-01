@@ -1,7 +1,9 @@
 ﻿using AuthLab.Api.Response;
 using AuthLab.Application.DTO.Login;
+using AuthLab.Application.Exceptions;
 using AuthLab.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AuthLab.Api.Controllers
 {
@@ -46,7 +48,7 @@ namespace AuthLab.Api.Controllers
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> LogOut(string refreshToken)
+        public async Task<IActionResult> LogOutAllAsync(string refreshToken)
         {
             await _authService.LogOutAsync(refreshToken);
 
@@ -57,6 +59,22 @@ namespace AuthLab.Api.Controllers
             };
 
             return Ok();
+        }
+
+        [HttpPost("logout-all")]
+        public async Task<IActionResult> LogOutAllAsync()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedException("Invalid user id.");
+
+            await _authService.LogOutAsync(userId);
+
+            var response = new ApiResponse<object>()
+            {
+                Success = true,
+                Message = "Logged out from all devices successfully.",
+            };
+
+            return Ok(response);
         }
     }
 }

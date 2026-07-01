@@ -79,6 +79,18 @@ namespace AuthLab.Infrastructure.Identity.Services
             await _appDbContext.SaveChangesAsync();
         }
 
+        public async Task LogOutAllSystemsAsync(string userId)
+        {
+            var refreshTokens = await _appDbContext.RefreshTokens.Where(r => r.UserId == userId && !r.IsRevoked).ToListAsync();
+
+            foreach (var token in refreshTokens)
+            {
+                token.RevokedAt = DateTime.UtcNow;
+            }
+
+            await _appDbContext.SaveChangesAsync();
+        }
+
         public async Task<LoginResponseDto> RefreshTokenAsync(string refreshToken)
         {
             RefreshToken refresh = await _appDbContext.RefreshTokens.Include(r => r.User).SingleOrDefaultAsync(r => r.Token == refreshToken) ?? throw new UnauthorizedException(InvalidRefreshToken);

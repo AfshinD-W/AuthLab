@@ -26,6 +26,7 @@ builder.Services.AddIdentity<User, Role>(c =>
 
 //Configs
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<RefreshTokenOptions>(builder.Configuration.GetSection("RefreshTokenOptions"));
 
 //Services
 builder.Services.AddScoped<IUserService, UserService>();

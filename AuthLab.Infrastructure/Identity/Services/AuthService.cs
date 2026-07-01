@@ -6,6 +6,7 @@ using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 
 namespace AuthLab.Infrastructure.Identity.Services
@@ -15,14 +16,16 @@ namespace AuthLab.Infrastructure.Identity.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtService _jwtService;
+        private readonly RefreshTokenOptions _refreshTokenOptions;
         private readonly AppDbContext _appDbContext;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
             _appDbContext = appDbContext;
+            _refreshTokenOptions = refreshTokenOptions.Value;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
@@ -93,13 +96,13 @@ namespace AuthLab.Infrastructure.Identity.Services
             };
         }
 
-        private static RefreshToken CreateRefreshToken(string userId)
+        private RefreshToken CreateRefreshToken(string userId)
         {
             return new()
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(15),
+                ExpiresAt = DateTime.UtcNow.AddDays(_refreshTokenOptions.ExpireDays),
                 UserId = userId
             };
         }

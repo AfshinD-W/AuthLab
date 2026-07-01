@@ -20,12 +20,12 @@ namespace AuthLab.Infrastructure.Identity.Services
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {
             User? user = await _userManager.FindByEmailAsync(request.Email)
-                ?? throw new UnauthorizedException("Invalid username or password.");
+                ?? throw new UnauthorizedException("Invalid email or password.");
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, true);
 
             if (!result.Succeeded)
-                throw new UnauthorizedException("Invalid username or password.");
+                throw new UnauthorizedException("Invalid email or password.");
 
             IList<string> roles = await _userManager.GetRolesAsync(user);
         }

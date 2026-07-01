@@ -2,6 +2,7 @@
 using AuthLab.Application.DTO.Login;
 using AuthLab.Application.Exceptions;
 using AuthLab.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -47,6 +48,7 @@ namespace AuthLab.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpPost("logout")]
         public async Task<IActionResult> LogOutAllAsync(string refreshToken)
         {
@@ -61,6 +63,7 @@ namespace AuthLab.Api.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("logout-all")]
         public async Task<IActionResult> LogOutAllAsync()
         {

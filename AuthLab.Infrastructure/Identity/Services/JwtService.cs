@@ -16,7 +16,7 @@ namespace AuthLab.Infrastructure.Identity.Services
             _jwtOptions = jwtOptions.Value;
         }
 
-        public string GenerateAccessToken(JwtUserInfoDto userInfo)
+        public JwtResponse GenerateAccessToken(JwtUserInfoDto userInfo)
         {
             List<Claim> claims =
                 [
@@ -29,18 +29,24 @@ namespace AuthLab.Infrastructure.Identity.Services
 
             string secretKey = _jwtOptions.SecretKey;
 
+            DateTime expiry = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpireMinutes);
+
             SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(secretKey));
 
-            SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.Sha256);
+            SigningCredentials credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             JwtSecurityToken token = new(
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpireMinutes),
+                expires: expiry,
                 signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtResponse()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpiresAt = expiry
+            };
         }
     }
 }

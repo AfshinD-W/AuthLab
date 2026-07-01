@@ -4,6 +4,6 @@ namespace AuthLab.Application.Interfaces
 {
     public interface IJwtService
     {
-        string GenerateAccessToken(JwtUserInfoDto userInfo);
+        JwtResponse GenerateAccessToken(JwtUserInfoDto userInfo);
     }
 }

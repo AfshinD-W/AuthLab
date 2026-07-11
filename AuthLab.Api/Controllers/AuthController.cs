@@ -1,5 +1,6 @@
 ﻿using AuthLab.Api.Response;
 using AuthLab.Application.DTO.Login;
+using AuthLab.Application.DTO.Password;
 using AuthLab.Application.Exceptions;
 using AuthLab.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -75,6 +76,34 @@ namespace AuthLab.Api.Controllers
             {
                 Success = true,
                 Message = "Logged out from all devices successfully.",
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordRequestDto dto)
+        {
+            await _authService.ForgotPasswordAsync(dto);
+
+            ApiResponse<object> response = new()
+            {
+                Success = true,
+                Message = "We send an email to your account, pleas check your google acount.",
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequestDto dto)
+        {
+            await _authService.ResetPasswordAsync(dto);
+
+            ApiResponse<object> response = new()
+            {
+                Success = true,
+                Message = "Your password changed successfully.",
             };
 
             return Ok(response);

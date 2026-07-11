@@ -173,6 +173,7 @@ namespace AuthLab.Infrastructure.Identity.Services
 
             string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
+            //Use your url for this part
             string resetLink = $"https://localhost:5173/reset-password?email={request.Email}&token={encodedToken}";
 
             await _emailService.SendAsync(request.Email, "Reset Password", resetLink);

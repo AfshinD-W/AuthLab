@@ -1,10 +1,12 @@
 ﻿using AuthLab.Api.Response;
 using AuthLab.Application.DTO.User;
 using AuthLab.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthLab.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -31,6 +33,7 @@ namespace AuthLab.Api.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("create-user")]
         public async Task<IActionResult> CreateUserAsync(CreateUserRequestDto dto)
         {

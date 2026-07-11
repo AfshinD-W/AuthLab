@@ -6,6 +6,7 @@ using AuthLab.Infrastructure.Identity.Entities;
 using AuthLab.Infrastructure.Identity.Services;
 using AuthLab.Infrastructure.Identity.Validators;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,21 @@ builder.Services.AddSwaggerGen(c =>
         Title = "AuthLab",
         Version = "v1",
         Description = "API documentation for AuthLab project",
+    });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token only. Do not type 'Bearer'."
+    });
+
+    c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
     });
 });
 

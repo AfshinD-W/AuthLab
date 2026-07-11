@@ -177,5 +177,17 @@ namespace AuthLab.Infrastructure.Identity.Services
 
             await _emailService.SendAsync(request.Email, "Reset Password", resetLink);
         }
+
+        public async Task ResetPasswordAsync(ResetPasswordRequestDto request)
+        {
+            User user = await _userManager.FindByEmailAsync(request.Email) ?? throw new NotFoundException("There is no user with this email.");
+
+            string decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+
+            IdentityResult result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
+
+            if (!result.Succeeded)
+                throw new ValidationException([.. result.Errors.Select(e => e.Description)]);
+        }
     }
 }

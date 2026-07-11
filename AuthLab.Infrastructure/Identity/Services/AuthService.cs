@@ -19,6 +19,8 @@ namespace AuthLab.Infrastructure.Identity.Services
     {
         private const string InvalidRefreshToken = "Invalid refresh token.";
 
+        #region Constructure
+
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IJwtService _jwtService;
@@ -27,7 +29,14 @@ namespace AuthLab.Infrastructure.Identity.Services
         private readonly IEmailService _emailService;
         private readonly AppDbContext _appDbContext;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger<AuthService> logger, IEmailService emailService)
+        public AuthService(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IJwtService jwtService,
+            AppDbContext appDbContext,
+            IOptions<RefreshTokenOptions> refreshTokenOptions,
+            ILogger<AuthService> logger,
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,6 +46,8 @@ namespace AuthLab.Infrastructure.Identity.Services
             _appDbContext = appDbContext;
             _emailService = emailService;
         }
+
+        #endregion
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {

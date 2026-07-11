@@ -2,6 +2,7 @@ using AuthLab.Api.Middlewares;
 using AuthLab.Application.DTO.Jwt;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Database;
+using AuthLab.Infrastructure.Email;
 using AuthLab.Infrastructure.Identity.Entities;
 using AuthLab.Infrastructure.Identity.Services;
 using AuthLab.Infrastructure.Identity.Validators;
@@ -71,6 +72,7 @@ builder.Services.AddScoped<IUserRoleService, UserRoleService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddControllers();
 

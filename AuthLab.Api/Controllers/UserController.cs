@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthLab.Api.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -49,6 +49,7 @@ namespace AuthLab.Api.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPut("update-User")]
         public async Task<IActionResult> UpdateUserAsync(UpdateUserRequestDto dto)
         {

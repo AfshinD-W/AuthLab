@@ -1,14 +1,17 @@
 ﻿using AuthLab.Application.DTO.Jwt;
 using AuthLab.Application.DTO.Login;
+using AuthLab.Application.DTO.Password;
 using AuthLab.Application.Exceptions;
 using AuthLab.Application.Interfaces;
 using AuthLab.Infrastructure.Database;
 using AuthLab.Infrastructure.Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace AuthLab.Infrastructure.Identity.Services
 {
@@ -21,9 +24,10 @@ namespace AuthLab.Infrastructure.Identity.Services
         private readonly IJwtService _jwtService;
         private readonly RefreshTokenOptions _refreshTokenOptions;
         private readonly ILogger<AuthService> _logger;
+        private readonly IEmailService _emailService;
         private readonly AppDbContext _appDbContext;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger<AuthService> logger)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IJwtService jwtService, AppDbContext appDbContext, IOptions<RefreshTokenOptions> refreshTokenOptions, ILogger<AuthService> logger, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -31,6 +35,7 @@ namespace AuthLab.Infrastructure.Identity.Services
             _refreshTokenOptions = refreshTokenOptions.Value;
             _logger = logger;
             _appDbContext = appDbContext;
+            _emailService = emailService;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
@@ -155,6 +160,22 @@ namespace AuthLab.Infrastructure.Identity.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(_refreshTokenOptions.ExpireDays),
                 UserId = userId
             };
+        }
+
+        public async Task ForgotPasswordAsync(ForgotPasswordRequestDto request)
+        {
+            User? user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user is null)
+                return;
+
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            string resetLink = $"https://localhost:5173/reset-password?email={request.Email}&token={encodedToken}";
+
+            await _emailService.SendAsync(request.Email, "Reset Password", resetLink);
         }
     }
 }

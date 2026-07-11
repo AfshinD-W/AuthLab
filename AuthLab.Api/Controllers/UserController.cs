@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthLab.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase

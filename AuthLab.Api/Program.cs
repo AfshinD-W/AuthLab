@@ -59,6 +59,12 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+//Authorization
+builder.Services.AddAuthorization(c =>
+{
+    c.AddPolicy("Admin", p => p.RequireRole("Admin"));
+});
+
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRoleService, UserRoleService>();

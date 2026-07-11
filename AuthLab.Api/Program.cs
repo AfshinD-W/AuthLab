@@ -42,7 +42,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "AuthLab",
         Version = "v1",
@@ -61,7 +61,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
     });
 });
 

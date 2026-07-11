@@ -32,7 +32,7 @@ builder.Services.AddIdentity<User, Role>(c =>
 //Configs
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<RefreshTokenOptions>(builder.Configuration.GetSection("RefreshTokenOptions"));
-
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 
 //Authentication
 JwtOptions jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
